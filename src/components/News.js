@@ -16,18 +16,29 @@ const News = (props)=>{
     }
 
     const updateNews = async ()=> {
-        props.setProgress(10);
-        const url = `https://newsapi.org/v2/top-headlines?country=${props.country}&category=${props.category}&apiKey=${props.apiKey}&page=${page}&pageSize=${props.pageSize}`;
-        // this.setState({ loading: true });
-        setLoading(true);
-        let data = await fetch(url);
-        props.setProgress(30);
-        let parsedData = await data.json()
-        props.setProgress(70);
-        setArticles(parsedData.articles);
-        setTotalResults(parsedData.totalResults);
-        setLoading(false);
-        props.setProgress(100);
+        try{
+            props.setProgress(10);
+            const url = `https://newsapi.org/v2/top-headlines?country=${props.country}&category=${props.category}&apiKey=${props.apiKey}&page=${page}&pageSize=${props.pageSize}`;
+            // this.setState({ loading: true });
+            setLoading(true);
+            let data = await fetch(url);
+            props.setProgress(30);
+            let parsedData = await data.json()
+            props.setProgress(70);
+
+            if(parsedData.articles) {
+                setArticles(parsedData.articles);
+                setTotalResults(parsedData.totalResults);
+            }else {
+                setArticles([]); 
+            }
+            setLoading(false);
+            props.setProgress(100);
+        }
+        catch(error) {
+            console.log("Failed to fetch news: ", error);
+            setLoading(false);
+        }
     }
     useEffect(()=>{
         document.title = `${capitalizeFirstLetter(props.category)} - NewsMonkey`;
@@ -36,21 +47,30 @@ const News = (props)=>{
     },[])
 
     const fetchMoreData = async () => {  
-        setPage(page+1);
-        const url = `https://newsapi.org/v2/top-headlines?country=${props.country}&category=${props.category}&apiKey=${props.apiKey}&page=${page}&pageSize=${props.pageSize}`;
-        let data = await fetch(url);
-        let parsedData = await data.json()
-        setArticles(articles.concat(parsedData.articles));
-        setTotalResults(parsedData.totalResults);
+        try{
+            setPage(page+1);
+            const url = `https://newsapi.org/v2/top-headlines?country=${props.country}&category=${props.category}&apiKey=${props.apiKey}&page=${page}&pageSize=${props.pageSize}`;
+            let data = await fetch(url);
+            let parsedData = await data.json()
+        
+            if(parsedData.articles) {
+                setArticles(articles.concat(parsedData.articles));
+            }
+            else{
+                setTotalResults(parsedData.totalResults);
+            }
+        }catch(error) {
+            console.log("Failed to fetch more data: ", error);
+        }
       };
         return (
             <>
                 <h1 className="text-center" style={{ margin: '35px 0px',marginTop: '90px'}}>NewsMonkey - Top {capitalizeFirstLetter(props.category)} Headlines</h1>
                 {loading && <Spinner />}
                 <InfiniteScroll
-                    dataLength={articles.length}
+                    dataLength={articles?.length}
                     next={fetchMoreData}
-                    hasMore={articles.length !== totalResults}
+                    hasMore={articles?.length !== totalResults}
                     loader={<Spinner/>}
                 > 
                     <div className="container">
