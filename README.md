@@ -2,8 +2,6 @@
 
 A sleek and responsive news application built with **React.js** that fetches and displays the latest news using the [NewsAPI](https://newsapi.org/). This app offers a dynamic and engaging user experience, featuring infinite scrolling, categorized news, and a progress bar for better usability.
 
-![News App Banner](./public/images/all%20News.png)
-
 ---
 
 ## **Features**
@@ -19,10 +17,10 @@ A sleek and responsive news application built with **React.js** that fetches and
 ## **Screenshots**
 
 ### All News
-![Home Page](./public/images/all-News.png)
+![All News](./public/images/all-News.png)
 
 ### Categorywise News
-![News Article View](./public/images/news-article.png)
+![Categorywise News](./public/images/Categorywise-News.png)
 
 ---
 
